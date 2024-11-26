@@ -1,8 +1,8 @@
 class UserController:
     @staticmethod
-    def register_user():
+    def register():
         pass
 
     @staticmethod
-    def login_user():
+    def login():
         pass
