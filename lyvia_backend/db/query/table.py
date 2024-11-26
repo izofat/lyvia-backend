@@ -24,7 +24,7 @@ class TableQueries(BaseQuery):
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 userId INT NOT NULL,
                 jwtToken VARCHAR(2000) NOT NULL,
-                jwtExpireDate DATETIME NOT NULL,
+                expireDate DATETIME NOT NULL,
                 createdAt DATETIME DEFAULT NOW() NOT NULL,
                 FOREIGN KEY (userId) REFERENCES user(id)
                 ON DELETE CASCADE
