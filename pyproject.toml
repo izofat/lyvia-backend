@@ -7,6 +7,19 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
+flask = "^3.1.0"
+mypy = "^1.13.0"
+pylint = "^3.3.1"
+toml = "^0.10.2"
+isort = "^5.13.2"
+black = "^24.10.0"
+bandit = "^1.7.10"
+autoflake = "^2.3.1"
+pyjwt = "^2.10.0"
+mysql-connector-python = "^9.1.0"
+pydash = "^8.0.4"
+bcrypt = "^4.2.1"
+pydantic = "^2.10.2"
 
 
 [build-system]
