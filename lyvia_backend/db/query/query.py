@@ -7,7 +7,18 @@ from lyvia_backend.db.query.table import TableQueries
 
 
 class Query:
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance._initialized = False
+        return cls._instance
+
     def __init__(self):
+        if self._initialized:
+            return
+
         self.connection = DbConnection()
         self._tables = TableQueries(self.connection)
         self._insert = InsertQueries(self.connection)
@@ -15,6 +26,8 @@ class Query:
 
         self._tables.create_user_table()
         self._tables.create_token_table()
+
+        self._initialized = True
 
     def register_account(
         self, username: str, password: str, name: str, lastName: str, email: str
