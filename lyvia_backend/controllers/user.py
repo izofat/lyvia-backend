@@ -24,7 +24,16 @@ class UserController:
             )
 
             return make_response(jsonify(response), 201)
-        except user_exceptions.UserAlreadyExists as e:
+        except (
+            user_exceptions.UserAlreadyExists,
+            user_exceptions.PasswordNotContainsLetter,
+            user_exceptions.PasswordNotContainsNumber,
+            user_exceptions.PasswordNotContainsSymbol,
+            user_exceptions.PasswordTooLong,
+            user_exceptions.PasswordTooShort,
+            user_exceptions.UsernameTooLong,
+            user_exceptions.UsernameTooShort,
+        ) as e:
             return make_response(jsonify({"error": e.message}), e.status_code)
         except Exception as e:
             Logger.error("Error while creating user", e)

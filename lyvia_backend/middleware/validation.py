@@ -10,7 +10,7 @@ def validate_field(*required_fields):
         def decorated(*args, **kwargs):
             data = request.json
             if not data:
-                make_response(jsonify({"error": "Missing request body"}), 400)
+                return make_response(jsonify({"error": "Missing request body"}), 400)
 
             missing_fields = [
                 field for field in required_fields if not get(data, field)

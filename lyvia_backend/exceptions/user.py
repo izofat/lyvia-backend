@@ -21,28 +21,34 @@ class InvalidCredentials(NotAuthenticatedException):
 class UsernameTooLong(NotAuthenticatedException):
     """Raised when the username is too long"""
 
-    def __init__(self, message="Username is too long"):
+    def __init__(self, message="Username is too long it must be at most 20 characters"):
         super().__init__(message)
 
 
 class UsernameTooShort(NotAuthenticatedException):
     """Raised when the username is too short"""
 
-    def __init__(self, message="Username is too short"):
+    def __init__(
+        self, message="Username is too short it must be at least 6 characters"
+    ):
         super().__init__(message)
 
 
 class PasswordTooLong(NotAuthenticatedException):
     """Raised when the password is too long"""
 
-    def __init__(self, message="Password is too long"):
+    def __init__(
+        self, message="Password is too long it must be at most 100 characters"
+    ):
         super().__init__(message)
 
 
 class PasswordTooShort(NotAuthenticatedException):
     """Raised when the password is too short"""
 
-    def __init__(self, message="Password is too short"):
+    def __init__(
+        self, message="Password is too short it must be at least 8 characters"
+    ):
         super().__init__(message)
 
 
@@ -65,3 +71,24 @@ class TokenNotMatch(NotAuthenticatedException):
 
     def __init__(self, message="Token is not matched, check your token"):
         super().__init__(message, 401)
+
+
+class PasswordNotContainsNumber(NotAuthenticatedException):
+    """Raised when the password is not contains number"""
+
+    def __init__(self, message="Password must contain at least one number"):
+        super().__init__(message)
+
+
+class PasswordNotContainsLetter(NotAuthenticatedException):
+    """Raised when the password is not contains letter"""
+
+    def __init__(self, message="Password must contain at least one letter"):
+        super().__init__(message)
+
+
+class PasswordNotContainsSymbol(NotAuthenticatedException):
+    """Raised when the password is not contains symbol"""
+
+    def __init__(self, message="Password must contain at least one symbol"):
+        super().__init__(message)
