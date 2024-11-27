@@ -16,13 +16,13 @@ class UserService:
 
     @classmethod
     def create_user(
-        cls, username: str, password: str, name: str, lastName: str, email: str
+        cls, username: str, password: str, name: str, last_name: str, email: str
     ) -> t.Dict[str, t.Union[str, datetime, int]]:
         user = User(
             username=username,
             password=password,
             name=name,
-            lastName=lastName,
+            lastName=last_name,
             email=email,
         )
         hashed_password = user.hash_password()
@@ -108,5 +108,5 @@ class UserService:
         except jwt.InvalidTokenError as e:
             raise exceptions.InvalidToken() from e
         except Exception as e:
-            Logger.error(e)
+            Logger.error("Error while verifying jwt token", e)
             raise exceptions.InvalidToken() from e

@@ -1,7 +1,6 @@
 import logging
 import sys
 import traceback
-from typing import Optional
 
 
 class Logger:
@@ -32,9 +31,11 @@ class Logger:
         cls.logger.critical(message, *args)
 
     @classmethod
-    def error(cls, exception: Exception, message: Optional[str] = None) -> None:
-        error_traceback = traceback.format_exc()
-        error_message = f"{message}: {str(exception)}" if message else str(exception)
+    def error(cls, message: str, error: Exception) -> None:
+        error_traceback = "".join(
+            traceback.format_exception(type(error), error, error.__traceback__)
+        )
+        error_message = f"{message}: {str(error)}"
         cls.logger.error(
-            "Exception occurred: %s\nTraceback: %s", error_message, error_traceback
+            "Traceback: %s \nException occurred: %s", error_traceback, error_message
         )
