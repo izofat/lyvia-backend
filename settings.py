@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 
 import pydash
 import toml
@@ -26,6 +27,10 @@ assert API_PORT, "API port not found in config.toml"
 JWT_SECRET = pydash.get(config, "jwt_secret")
 
 assert JWT_SECRET, "JWT secret not found in config.toml"
+
+JWT_EXPIRATION_DELTA = timedelta(days=pydash.get(config, "jwt_expiration_delta", 5))
+
+JWT_ALGORITHM = pydash.get(config, "jwt_algorithm", "HS256")
 
 
 class MySqlConfig:
