@@ -58,7 +58,7 @@ class UserService:
             Logger.info("User ID is missing check the data: %s", user.model_dump())
             raise exceptions.InvalidCredentials("User ID is missing")
 
-        token, exp = cls.generate_jwt_token(user)
+        token = cls.generate_jwt_token(user)
 
         return UserSuccessfullResponse(
             id=user.id,
@@ -66,8 +66,7 @@ class UserService:
             name=user.name,
             lastName=user.lastName,
             email=user.email,
-            jwtToken=token,
-            exp=exp,
+            **token,
         ).model_dump()
 
     @classmethod
@@ -82,7 +81,7 @@ class UserService:
         ):
             return token_record["jwtToken"], token_record["expireDate"]
 
-        token: JWTEncoded = User.create_token()
+        token: JWTEncoded = user.create_token()
 
         cls.query.insert_token(user.id, token.jwtToken, token.expireDate)
 

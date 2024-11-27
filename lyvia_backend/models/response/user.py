@@ -10,4 +10,4 @@ class UserSuccessfullResponse(BaseModel):
     lastName: str
     email: str
     jwtToken: str
-    exp: datetime
+    expireDate: datetime
