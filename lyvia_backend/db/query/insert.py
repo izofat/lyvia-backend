@@ -17,7 +17,7 @@ class InsertQueries(BaseQuery):
 
     def insert_token(self, user_id: int, jwt_token: str, jwt_expire_date: datetime):
         query = """
-            INSERT INTO token (userId, jwtToken, jwtExpireDate)
+            INSERT INTO token (userId, jwtToken, expireDate)
             VALUES (%s, %s, %s)
         """
         return self.execute_query(

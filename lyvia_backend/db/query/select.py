@@ -12,7 +12,7 @@ class SelectQueries(BaseQuery):
         query = """
             SELECT id, userId, jwtToken, expireDate FROM token 
             WHERE userId = %s
-            ORDER BY jwtExpireDate DESC
+            ORDER BY expireDate DESC
             LIMIT 1
         """
         return self.execute_query(query, user_id)

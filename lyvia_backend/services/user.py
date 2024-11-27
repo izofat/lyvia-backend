@@ -77,10 +77,10 @@ class UserService:
         if (
             token_record
             and (token_record := token_record[0])
-            and token_record["jwtExpireDate"].replace(tzinfo=UTC) - datetime.now(UTC)
+            and token_record["expireDate"].replace(tzinfo=UTC) - datetime.now(UTC)
             > timedelta(hours=1)
         ):
-            return token_record["jwtToken"], token_record["jwtExpireDate"]
+            return token_record["jwtToken"], token_record["expireDate"]
 
         token: JWTEncoded = User.create_token()
 
