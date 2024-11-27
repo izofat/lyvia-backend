@@ -44,15 +44,15 @@ class User(BaseModel):
         if len(password) > 100:
             raise exceptions.PasswordTooLong()
         if not any(c.isdigit() for c in password):
-            raise exceptions.InvalidCredentials(
+            raise exceptions.PasswordNotContainsNumber(
                 "Password must contain at least one number"
             )
         if not any(c.isalpha() for c in password):
-            raise exceptions.InvalidCredentials(
+            raise exceptions.PasswordNotContainsLetter(
                 "Password must contain at least one letter"
             )
         if not any(not c.isalnum() for c in password):
-            raise exceptions.InvalidCredentials(
+            raise exceptions.PasswordNotContainsSymbol(
                 "Password must contain at least one symbol"
             )
         return password
