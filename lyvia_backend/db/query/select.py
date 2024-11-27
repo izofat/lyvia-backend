@@ -10,7 +10,7 @@ class SelectQueries(BaseQuery):
 
     def get_token(self, user_id: int):
         query = """
-            SELECT id, userId, jwtToken, jwtExpireDate FROM token 
+            SELECT id, userId, jwtToken, expireDate FROM token 
             WHERE userId = %s
             ORDER BY jwtExpireDate DESC
             LIMIT 1
