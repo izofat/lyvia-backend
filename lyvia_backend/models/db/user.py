@@ -9,6 +9,7 @@ from settings import JWT_ALGORITHM, JWT_EXPIRATION_DELTA, JWT_SECRET
 
 
 class JWTEncoded(BaseModel):
+    userId: int
     jwtToken: str
     expireDate: datetime
 
@@ -68,4 +69,4 @@ class User(BaseModel):
         expire_date = now + JWT_EXPIRATION_DELTA
         payload = {"user_id": self.id, "exp": expire_date, "iat": now}
         token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
-        return JWTEncoded(jwtToken=token, expireDate=expire_date)
+        return JWTEncoded(userId=self.id, jwtToken=token, expireDate=expire_date)

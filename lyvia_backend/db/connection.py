@@ -6,15 +6,15 @@ from settings import MySqlConfig
 class DbConnection:
     _instance = None
     _pool = None
+    _initialized = False
 
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
-            cls._instance._initialized = False
         return cls._instance
 
     def __init__(self, config=MySqlConfig):
-        if self._initialized:
+        if DbConnection._initialized:
             return
 
         if DbConnection._pool is None:
@@ -30,7 +30,7 @@ class DbConnection:
                 collation="utf8mb4_unicode_ci",
             )
         self.conn = None
-        self._initialized = True
+        DbConnection._initialized = True
 
     def __enter__(self):
         self.conn = DbConnection._pool.get_connection()

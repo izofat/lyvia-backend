@@ -34,10 +34,10 @@ class UserService:
         if not result:
             raise exceptions.UserAlreadyExists()
 
-        return cls.login_user(user.username, user.password)
+        return cls.authenticate_user(user.username, user.password)
 
     @classmethod
-    def login_user(
+    def authenticate_user(
         cls, username: str, password: str
     ) -> t.Dict[str, t.Union[str, datetime, int]]:
         data = cls.query.get_user(username)
@@ -70,16 +70,16 @@ class UserService:
         ).model_dump()
 
     @classmethod
-    def generate_jwt_token(cls, user: User) -> t.Tuple[str, datetime]:
-        token_record = cls.query.get_token(user.id)
+    def generate_jwt_token(cls, user: User) -> t.Dict[str, t.Union[str, datetime]]:
+        existing_token = cls.query.get_token(user.id)
+        existing_token = existing_token[0] if existing_token else None
 
-        if (
-            token_record
-            and (token_record := token_record[0])
-            and token_record["expireDate"].replace(tzinfo=UTC) - datetime.now(UTC)
-            > timedelta(hours=1)
-        ):
-            return token_record["jwtToken"], token_record["expireDate"]
+        if existing_token:
+            token_record = JWTEncoded(**existing_token)
+            now = datetime.now(UTC)
+            time_remaining = token_record.expireDate.replace(tzinfo=UTC) - now
+            if time_remaining > timedelta(hours=1):
+                return token_record.model_dump()
 
         token: JWTEncoded = user.create_token()
 

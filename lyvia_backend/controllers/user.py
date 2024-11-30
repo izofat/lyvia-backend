@@ -40,5 +40,18 @@ class UserController:
             return make_response(jsonify({"error": "Internal server error"}), 500)
 
     @staticmethod
+    @validate_field("username", "password")
     def login():
-        pass
+        try:
+            data = request.json
+            username = get(data, "username")
+            password = get(data, "password")
+
+            response = UserService.authenticate_user(username, password)
+
+            return make_response(jsonify(response), 200)
+        except (user_exceptions.InvalidCredentials,) as e:
+            return make_response(jsonify({"error": e.message}), e.status_code)
+        except Exception as e:
+            Logger.error("Error while logging in", e)
+            return make_response(jsonify({"error": "Internal server error"}), 500)
