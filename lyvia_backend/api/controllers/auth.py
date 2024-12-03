@@ -53,6 +53,11 @@ def login():
         return make_response(jsonify({"error": "Internal server error"}), 500)
 
 
-@validate_field("email")
+@validate_field("email", "code")
 def verify_email():
+    pass
+
+
+@validate_field("email")
+def send_email_code():
     pass
