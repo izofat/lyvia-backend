@@ -4,7 +4,7 @@ import bcrypt
 import jwt
 from pydantic import BaseModel, Field, field_validator
 
-from lyvia_backend.exceptions import auth as exceptions
+from lyvia_backend.api.exceptions import auth as exceptions
 from settings import JWT_ALGORITHM, JWT_EXPIRATION_DELTA, JWT_SECRET
 
 

@@ -1,6 +1,6 @@
 from flask import Flask
 
-from lyvia_backend.routes.auth import auth_bp
+from lyvia_backend.api.routes.auth import auth_bp
 from settings import API_PORT, DEBUG
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 from flask import Blueprint
 
-from lyvia_backend.controllers.auth import register, login
+from lyvia_backend.api.controllers.auth import login, register
 
 auth_bp = Blueprint("auth", __name__)
 
