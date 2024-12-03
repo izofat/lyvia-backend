@@ -51,3 +51,8 @@ def login():
     except Exception as e:
         Logger.error("Error while logging in", e)
         return make_response(jsonify({"error": "Internal server error"}), 500)
+
+
+@validate_field("email")
+def verify_email():
+    pass
