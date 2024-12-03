@@ -4,14 +4,14 @@ from datetime import UTC, datetime, timedelta
 import jwt
 
 from lyvia_backend.db.query import Query
-from lyvia_backend.exceptions import user as exceptions
+from lyvia_backend.exceptions import auth as exceptions
 from lyvia_backend.logger import Logger
-from lyvia_backend.models.db.user import JWTDecoded, JWTEncoded, User
-from lyvia_backend.models.response.user import UserSuccessfullResponse
+from lyvia_backend.models.db.auth import JWTDecoded, JWTEncoded, User
+from lyvia_backend.models.response.auth import UserSuccessfullResponse
 from settings import JWT_SECRET
 
 
-class UserService:
+class AuthService:
     query = Query()
 
     @classmethod
