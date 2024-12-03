@@ -32,6 +32,10 @@ JWT_EXPIRATION_DELTA = timedelta(days=pydash.get(config, "jwt_expiration_delta",
 
 JWT_ALGORITHM = pydash.get(config, "jwt_algorithm", "HS256")
 
+EMAIL_CODE_EXPIRATION_DELTA = timedelta(
+    seconds=pydash.get(config, "email_code_expiration_delta", 300)
+)
+
 
 class MySqlConfig:
     HOST = pydash.get(config, f"db.{ENV}.host")
@@ -48,3 +52,11 @@ assert MySqlConfig.PORT, "Database port not found in config.toml"
 assert MySqlConfig.USER, "Database user not found in config.toml"
 assert MySqlConfig.PASSWORD, "Database password not found in config.toml"
 assert MySqlConfig.DATABASE, "Database name not found in config.toml"
+
+
+class RedisConfig:
+    HOST = pydash.get(config, f"redis.{ENV}.host")
+    PORT = pydash.get(config, f"redis.{ENV}.port")
+
+assert RedisConfig.HOST, "Redis host not found in config.toml"
+assert RedisConfig.PORT, "Redis port not found in config.toml"

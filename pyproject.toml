@@ -20,6 +20,7 @@ mysql-connector-python = "^9.1.0"
 pydash = "^8.0.4"
 bcrypt = "^4.2.1"
 pydantic = "^2.10.2"
+redis = "^5.2.0"
 
 
 [build-system]
