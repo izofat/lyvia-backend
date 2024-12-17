@@ -1,3 +1,4 @@
+from lyvia_backend.logger import Logger
 from lyvia_backend.redis.base import RedisClient
 from settings import EMAIL_CODE_EXPIRATION_DELTA
 
@@ -8,6 +9,7 @@ class AuthRedisClient:
     @classmethod
     def set_email_code(cls, email: str, code: str):
         cls._client.set(f"email_code:{email}", code, ex=EMAIL_CODE_EXPIRATION_DELTA)
+        Logger.info("Email code for %s is set code: %s", email, code)
 
     @classmethod
     def get_email_code(cls, email: str):

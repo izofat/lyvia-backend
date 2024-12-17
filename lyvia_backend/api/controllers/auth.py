@@ -55,9 +55,30 @@ def login():
 
 @validate_field("email", "code")
 def verify_email():
-    pass
+    try:
+        data = request.json
+        email = get(data, "email")
+        code = get(data, "code")
+
+        AuthService.verify_email(email, code)
+
+        return make_response(jsonify({"Message": "Email verify successful"}), 200)
+    except (auth_exceptions.InvalidEmailCode, auth_exceptions.EmailCodeNotFound) as e:
+        return make_response(jsonify({"error": e.message}), e.status_code)
+    except Exception as e:
+        Logger.error("Error while verifying email", e)
+        return make_response(jsonify({"error": "Internal server error"}), 500)
 
 
 @validate_field("email")
 def send_email_code():
-    pass
+    try:
+        data = request.json
+        email = get(data, "email")
+
+        AuthService.send_email_code(email)
+
+        return make_response(jsonify({"Message": "Email code sent"}), 200)
+    except Exception as e:
+        Logger.error("Error while sending email code", e)
+        return make_response(jsonify({"error": "Internal server error"}), 500)

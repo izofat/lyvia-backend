@@ -92,3 +92,17 @@ class PasswordNotContainsSymbol(NotAuthenticatedException):
 
     def __init__(self, message="Password must contain at least one symbol"):
         super().__init__(message)
+
+
+class InvalidEmailCode(NotAuthenticatedException):
+    """Raised when the email code is invalid"""
+
+    def __init__(self, message="Invalid email code", status_code=401):
+        super().__init__(message, status_code)
+
+
+class EmailCodeNotFound(NotAuthenticatedException):
+    """Raised when the email code is not found"""
+
+    def __init__(self, message="Email code not found", status_code=401):
+        super().__init__(message, status_code)

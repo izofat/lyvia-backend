@@ -1,3 +1,4 @@
+import random
 import typing as t
 from datetime import UTC, datetime, timedelta
 
@@ -8,6 +9,7 @@ from lyvia_backend.api.models.db.auth import JWTDecoded, JWTEncoded, User
 from lyvia_backend.api.models.response.auth import UserSuccessfullResponse
 from lyvia_backend.db.query import Query
 from lyvia_backend.logger import Logger
+from lyvia_backend.redis.auth import AuthRedisClient
 from settings import JWT_SECRET
 
 
@@ -66,11 +68,11 @@ class AuthService:
             name=user.name,
             lastName=user.lastName,
             email=user.email,
-            **token,
+            **token.model_dump(),
         ).model_dump()
 
     @classmethod
-    def generate_jwt_token(cls, user: User) -> t.Dict[str, t.Union[str, datetime]]:
+    def generate_jwt_token(cls, user: User) -> JWTEncoded:
         existing_token = cls.query.get_token(user.id)
         existing_token = existing_token[0] if existing_token else None
 
@@ -79,13 +81,13 @@ class AuthService:
             now = datetime.now(UTC)
             time_remaining = token_record.expireDate.replace(tzinfo=UTC) - now
             if time_remaining > timedelta(hours=1):
-                return token_record.model_dump()
+                return token_record
 
         token: JWTEncoded = user.create_token()
 
         cls.query.insert_token(user.id, token.jwtToken, token.expireDate)
 
-        return token.model_dump()
+        return token
 
     @classmethod
     def verify_jwt_token(cls, token: str) -> int:
@@ -109,3 +111,23 @@ class AuthService:
         except Exception as e:
             Logger.error("Error while verifying jwt token", e)
             raise exceptions.InvalidToken() from e
+
+    @classmethod
+    def send_email_code(cls, email: str) -> None:
+        code = "".join(random.choices("0123456789", k=6))
+        AuthRedisClient.set_email_code(email, code)
+
+        #! TODO: add smtp email sending here
+
+    @classmethod
+    def verify_email(cls, email: str, code: str) -> None:
+        saved_code = AuthRedisClient.get_email_code(email)
+        if not saved_code:
+            raise exceptions.EmailCodeNotFound()
+
+        saved_code = saved_code.decode("utf-8")
+
+        if saved_code != code:
+            raise exceptions.InvalidEmailCode()
+
+        AuthRedisClient.delete_email_code(email)
