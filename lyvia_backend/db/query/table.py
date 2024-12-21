@@ -37,8 +37,9 @@ class TableQueries(BaseQuery):
             CREATE TABLE IF NOT EXISTS email (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 email VARCHAR(254) NOT NULL UNIQUE,
-                isVerified BOOL NOT NULL DEFAULT FALSE,
-                verifiedAt DATETIME DEFAULT NOW()
+                isVerified BOOL NOT NULL DEFAULT FALSE NOT NULL,
+                addedAt DATETIME DEFAULT NOW() NOT NULL,
+                verifiedAt DATETIME DEFAULT NULL
             )
         """
         return self.execute_query(query)

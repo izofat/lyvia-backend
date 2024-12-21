@@ -4,6 +4,7 @@ from lyvia_backend.db.connection import DbConnection
 from lyvia_backend.db.query.insert import InsertQueries
 from lyvia_backend.db.query.select import SelectQueries
 from lyvia_backend.db.query.table import TableQueries
+from lyvia_backend.db.query.update import UpdateQueries
 
 
 class Query:
@@ -23,6 +24,7 @@ class Query:
         self._tables = TableQueries(self.connection)
         self._insert = InsertQueries(self.connection)
         self._select = SelectQueries(self.connection)
+        self._update = UpdateQueries(self.connection)
 
         self._tables.create_email_table()
         self._tables.create_user_table()
@@ -43,3 +45,9 @@ class Query:
 
     def get_token(self, user_id: int):
         return self._select.get_token(user_id)
+
+    def add_email(self, email: str):
+        return self._insert.add_email(email)
+
+    def verify_email(self, email: str):
+        return self._update.verify_email(email)

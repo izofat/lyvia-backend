@@ -23,3 +23,10 @@ class InsertQueries(BaseQuery):
         return self.execute_query(
             query, user_id, jwt_token, jwt_expire_date, is_commit=True
         )
+
+    def add_email(self, email: str):
+        query = """
+            INSERT IGNORE INTO email (email)
+            VALUES (%s)
+        """
+        return self.execute_query(query, email, is_commit=True)

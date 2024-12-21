@@ -114,6 +114,8 @@ class AuthService:
 
     @classmethod
     def send_email_code(cls, email: str) -> None:
+        cls.query.add_email(email)
+
         code = "".join(random.choices("0123456789", k=6))
         AuthRedisClient.set_email_code(email, code)
 
@@ -130,4 +132,5 @@ class AuthService:
         if saved_code != code:
             raise exceptions.InvalidEmailCode()
 
+        cls.query.verify_email(email)
         AuthRedisClient.delete_email_code(email)
