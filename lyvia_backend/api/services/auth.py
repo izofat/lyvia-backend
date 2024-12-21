@@ -1,4 +1,4 @@
-import random
+import secrets
 import typing as t
 from datetime import UTC, datetime, timedelta
 
@@ -116,7 +116,7 @@ class AuthService:
     def send_email_code(cls, email: str) -> None:
         cls.query.add_email(email)
 
-        code = "".join(random.choices("0123456789", k=6))
+        code = "".join(secrets.choice("0123456789") for _ in range(6))
         AuthRedisClient.set_email_code(email, code)
 
         #! TODO: add smtp email sending here
