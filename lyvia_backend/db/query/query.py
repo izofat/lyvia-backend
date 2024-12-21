@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from lyvia_backend.db.connection import DbConnection
 from lyvia_backend.db.query.insert import InsertQueries
 from lyvia_backend.db.query.select import SelectQueries
@@ -21,33 +19,26 @@ class Query:
             return
 
         self.connection = DbConnection()
-        self._tables = TableQueries(self.connection)
-        self._insert = InsertQueries(self.connection)
-        self._select = SelectQueries(self.connection)
-        self._update = UpdateQueries(self.connection)
 
+        self._tables = TableQueries(self.connection)
         self._tables.create_email_table()
         self._tables.create_user_table()
         self._tables.create_token_table()
 
+        self._insert = InsertQueries(self.connection)
+        self._select = SelectQueries(self.connection)
+        self._update = UpdateQueries(self.connection)
+
         Query._initialized = True
 
-    def register_account(
-        self, username: str, password: str, name: str, lastName: str, email: str
-    ):
-        return self._insert.register_account(username, password, name, lastName, email)
+    @property
+    def insert(self):
+        return self._insert
 
-    def insert_token(self, user_id: int, jwt_token: str, jwt_expire_date: datetime):
-        return self._insert.insert_token(user_id, jwt_token, jwt_expire_date)
+    @property
+    def select(self):
+        return self._select
 
-    def get_user(self, username: str):
-        return self._select.get_user(username)
-
-    def get_token(self, user_id: int):
-        return self._select.get_token(user_id)
-
-    def add_email(self, email: str):
-        return self._insert.add_email(email)
-
-    def verify_email(self, email: str):
-        return self._update.verify_email(email)
+    @property
+    def update(self):
+        return self._update

@@ -29,7 +29,7 @@ class AuthService:
         )
         hashed_password = user.hash_password()
 
-        result = cls.query.register_account(
+        result = cls.query.insert.register_account(
             user.username, hashed_password, user.name, user.lastName, user.email
         )
 
@@ -42,7 +42,7 @@ class AuthService:
     def authenticate_user(
         cls, username: str, password: str
     ) -> t.Dict[str, t.Union[str, datetime, int]]:
-        data = cls.query.get_user(username)
+        data = cls.query.select.get_user(username)
 
         if not data:
             raise exceptions.InvalidCredentials()
@@ -73,7 +73,7 @@ class AuthService:
 
     @classmethod
     def generate_jwt_token(cls, user: User) -> JWTEncoded:
-        existing_token = cls.query.get_token(user.id)
+        existing_token = cls.query.select.get_token(user.id)
         existing_token = existing_token[0] if existing_token else None
 
         if existing_token:
@@ -85,7 +85,7 @@ class AuthService:
 
         token: JWTEncoded = user.create_token()
 
-        cls.query.insert_token(user.id, token.jwtToken, token.expireDate)
+        cls.query.insert.insert_token(user.id, token.jwtToken, token.expireDate)
 
         return token
 
@@ -95,7 +95,7 @@ class AuthService:
             decoded_jwt = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
             decoded_jwt = JWTDecoded(**decoded_jwt)
 
-            token_data = cls.query.get_token(decoded_jwt.userId)
+            token_data = cls.query.select.get_token(decoded_jwt.userId)
             token_data = token_data[0]
             encoded_jwt = JWTEncoded(**token_data)
 
@@ -114,7 +114,7 @@ class AuthService:
 
     @classmethod
     def send_email_code(cls, email: str) -> None:
-        cls.query.add_email(email)
+        cls.query.insert.add_email(email)
 
         code = "".join(secrets.choice("0123456789") for _ in range(6))
         AuthRedisClient.set_email_code(email, code)
@@ -132,5 +132,5 @@ class AuthService:
         if saved_code != code:
             raise exceptions.InvalidEmailCode()
 
-        cls.query.verify_email(email)
+        cls.query.update.verify_email(email)
         AuthRedisClient.delete_email_code(email)
