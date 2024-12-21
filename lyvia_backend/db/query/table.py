@@ -11,7 +11,6 @@ class TableQueries(BaseQuery):
                 name VARCHAR(100) NOT NULL,
                 lastName VARCHAR(100) NOT NULL,
                 email VARCHAR(254) NOT NULL UNIQUE,
-                emailVerified BOOL NOT NULL DEFAULT FALSE,
                 createdAt DATETIME DEFAULT NOW(),
                 updatedAt DATETIME DEFAULT NOW()
             )
@@ -29,6 +28,17 @@ class TableQueries(BaseQuery):
                 FOREIGN KEY (userId) REFERENCES user(id)
                 ON DELETE CASCADE
                 ON UPDATE CASCADE
+            )
+        """
+        return self.execute_query(query)
+
+    def create_email_table(self):
+        query = """
+            CREATE TABLE IF NOT EXISTS email (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                email VARCHAR(254) NOT NULL UNIQUE,
+                isVerified BOOL NOT NULL DEFAULT FALSE,
+                verifiedAt DATETIME DEFAULT NOW()
             )
         """
         return self.execute_query(query)

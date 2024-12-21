@@ -24,6 +24,7 @@ class Query:
         self._insert = InsertQueries(self.connection)
         self._select = SelectQueries(self.connection)
 
+        self._tables.create_email_table()
         self._tables.create_user_table()
         self._tables.create_token_table()
 
