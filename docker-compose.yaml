@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    ports:
+      - "${API_PORT:-5051}:5051"
+    volumes:
+      - .:/home/lyvia/backend
+    environment:
+      - PYTHONPATH=/home/lyvia/backend
+    networks:
+      - lyvia-network
+
+  redis:
+    image: redis:latest
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - lyvia-network
+
+volumes:
+  redis_data:
+
+networks:
+  lyvia-network:
+    external: true
+    name: lyvia-network

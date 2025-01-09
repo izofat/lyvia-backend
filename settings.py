@@ -18,6 +18,8 @@ assert config, "config.toml is empty, please fill it with the necessary data"
 
 DEBUG = pydash.get(config, "debug", True)
 
+IS_GLOBAL_API = pydash.get(config, "global_api", False)
+
 ENV = "dev" if DEBUG else "prod"
 
 API_PORT = pydash.get(config, f"api.{ENV}.port")

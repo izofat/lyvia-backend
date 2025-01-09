@@ -7,3 +7,4 @@ config.toml
 *.vscode/
 .DS_Store
 .venv/
+.env
