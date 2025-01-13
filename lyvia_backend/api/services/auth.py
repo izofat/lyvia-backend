@@ -127,10 +127,12 @@ class AuthService:
         if not saved_code:
             raise exceptions.EmailCodeNotFound()
 
-        saved_code = saved_code.decode("utf-8")
-
         if saved_code != code:
             raise exceptions.InvalidEmailCode()
 
         cls.query.update.verify_email(email)
         AuthRedisClient.delete_email_code(email)
+
+    @classmethod
+    def get_all_email_codes(cls) -> t.Dict[str, str]:
+        return AuthRedisClient.get_all_email_codes()

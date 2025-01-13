@@ -5,6 +5,7 @@ from lyvia_backend.api.exceptions import auth as auth_exceptions
 from lyvia_backend.api.middleware.validation import validate_field
 from lyvia_backend.api.services.auth import AuthService
 from lyvia_backend.logger import Logger
+from settings import DEBUG
 
 
 @validate_field("username", "password", "name", "lastName", "email")
@@ -81,4 +82,17 @@ def send_email_code():
         return make_response(jsonify({"Message": "Email code sent"}), 200)
     except Exception as e:
         Logger.error("Error while sending email code", e)
+        return make_response(jsonify({"error": "Internal server error"}), 500)
+
+
+def get_all_email_codes():
+    try:
+        if not DEBUG:
+            return make_response(jsonify({"error": "Not allowed"}), 403)
+
+        email_codes = AuthService.get_all_email_codes()
+
+        return make_response(jsonify({"email_codes": email_codes}), 200)
+    except Exception as e:
+        Logger.error("Error while fetching email codes", e)
         return make_response(jsonify({"error": "Internal server error"}), 500)
