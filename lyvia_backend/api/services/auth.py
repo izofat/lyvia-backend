@@ -1,6 +1,9 @@
 import secrets
+import smtplib
 import typing as t
 from datetime import UTC, datetime, timedelta
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 import jwt
 
@@ -10,7 +13,7 @@ from lyvia_backend.api.models.response.auth import UserSuccessfullResponse
 from lyvia_backend.db.query import Query
 from lyvia_backend.logger import Logger
 from lyvia_backend.redis.auth import AuthRedisClient
-from settings import JWT_SECRET
+from settings import EMAIL_CODE_EXPIRATION_DELTA, JWT_SECRET, SmtpConfig
 
 
 class AuthService:
@@ -29,12 +32,17 @@ class AuthService:
         )
         hashed_password = user.hash_password()
 
-        result = cls.query.insert.register_account(
+        user_register_result = cls.query.insert.register_account(
             user.username, hashed_password, user.name, user.lastName, user.email
         )
 
-        if not result:
+        if not user_register_result:
             raise exceptions.UserAlreadyExists()
+
+        email_save_result = cls.query.insert.add_email(email)
+
+        if not email_save_result:
+            raise exceptions.EmailAlreadyExists()
 
         return cls.authenticate_user(user.username, user.password)
 
@@ -114,12 +122,32 @@ class AuthService:
 
     @classmethod
     def send_email_code(cls, email: str) -> None:
-        cls.query.insert.add_email(email)
+        is_verified = cls.query.select.get_is_email_verified(email)
+
+        if is_verified[0]["isVerified"]:
+            raise exceptions.EmailAlreadyVerified()
 
         code = "".join(secrets.choice("0123456789") for _ in range(6))
         AuthRedisClient.set_email_code(email, code)
 
-        #! TODO: add smtp email sending here
+        message = MIMEMultipart()
+        message["From"] = SmtpConfig.FROM_EMAIL
+        message["To"] = email
+        message["Subject"] = "Your Verification Code"
+
+        body = (
+            f"Your verification code is: {code}\n"
+            f"This code will in expire {EMAIL_CODE_EXPIRATION_DELTA.seconds} seconds."
+        )
+        message.attach(MIMEText(body, "plain"))
+
+        try:
+            with smtplib.SMTP_SSL(SmtpConfig.HOST, SmtpConfig.PORT) as server:
+                server.login(SmtpConfig.USERNAME, SmtpConfig.PASSWORD)
+                server.send_message(message)
+            Logger.info(f"Verification email sent to {email}")
+        except Exception as e:
+            Logger.error("Failed to send verification email", e)
 
     @classmethod
     def verify_email(cls, email: str, code: str) -> None:

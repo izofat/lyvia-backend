@@ -39,6 +39,13 @@ EMAIL_CODE_EXPIRATION_DELTA = timedelta(
 )
 
 
+class SmtpConfig:
+    HOST = pydash.get(config, "smtp.host")
+    PORT = pydash.get(config, "smtp.port")
+    FROM_EMAIL = pydash.get(config, "smtp.from_email")
+    USERNAME = pydash.get(config, "smtp.username")
+    PASSWORD = pydash.get(config, "smtp.password")
+
 class MySqlConfig:
     HOST = pydash.get(config, f"db.{ENV}.host")
     PORT = pydash.get(config, f"db.{ENV}.port")

@@ -106,3 +106,17 @@ class EmailCodeNotFound(NotAuthenticatedException):
 
     def __init__(self, message="Email code not found", status_code=401):
         super().__init__(message, status_code)
+
+
+class EmailAlreadyVerified(NotAuthenticatedException):
+    """Raised when the email is already verified"""
+
+    def __init__(self, message="Email is already verified", status_code=409):
+        super().__init__(message, status_code)
+
+
+class EmailAlreadyExists(NotAuthenticatedException):
+    """Raised when the email already exists"""
+
+    def __init__(self, message="Email already exists", status_code=409):
+        super().__init__(message, status_code)

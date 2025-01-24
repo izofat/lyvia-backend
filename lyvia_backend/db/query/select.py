@@ -16,3 +16,9 @@ class SelectQueries(BaseQuery):
             LIMIT 1
         """
         return self.execute_query(query, user_id)
+
+    def get_is_email_verified(self, email: str):
+        query = """
+            SELECT isVerified FROM email WHERE email = %s
+        """
+        return self.execute_query(query, email)
